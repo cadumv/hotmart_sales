@@ -1,0 +1,38 @@
+name: Atualizar Vendas e Planilha
+
+on:
+  schedule:
+    - cron: '0 * * * *' # Executa a cada hora (ajuste conforme necessário)
+  workflow_dispatch: # Permite execução manual
+
+jobs:
+  update-sales:
+    runs-on: ubuntu-latest
+
+    steps:
+    # 1. Fazer checkout do repositório
+    - name: Checkout do repositório
+      uses: actions/checkout@v3
+
+    # 2. Configurar o Node.js
+    - name: Configurar Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: 16
+
+    # 3. Instalar dependências
+    - name: Instalar dependências
+      run: npm install
+
+    # 4. Executar o script para gerar o arquivo all_sales.json
+    - name: Executar fetch_all_sales.js
+      run: node fetch_all_sales.js
+
+    # 5. Commit e push do arquivo atualizado
+    - name: Commit e Push
+      run: |
+        git config --local user.name "GitHub Actions"
+        git config --local user.email "actions@github.com"
+        git add all_sales.json
+        git commit -m "Atualização automática do arquivo all_sales.json"
+        git push
