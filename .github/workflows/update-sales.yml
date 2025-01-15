@@ -1,4 +1,4 @@
-name: Executar fetch_all_sales.js
+name: Atualizar Vendas e Google Sheets
 
 on:
   schedule:
@@ -6,7 +6,7 @@ on:
   workflow_dispatch: # Permite execução manual
 
 jobs:
-  execute-sales-fetch:
+  update-sales:
     runs-on: ubuntu-latest
 
     steps:
@@ -24,6 +24,14 @@ jobs:
     - name: Instalar dependências
       run: npm install
 
-    # 4. Executar o script fetch_all_sales.js
-    - name: Executar o script
+    # 4. Executar fetch_all_sales.js
+    - name: Executar fetch_all_sales.js
       run: node fetch_all_sales.js
+
+    # 5. Enviar dados para o Google Sheets
+    - name: Enviar dados para o Google Sheets
+      run: |
+        curl -X POST \
+        -H "Content-Type: application/json" \
+        -d @all_sales.json \
+        "https://script.google.com/macros/s/AKfycbxq-nGLHJOsoHYcAQKTXw5u1qXXHz00p_Cq7c6JJhdtBge8la4zb2ThiUSUabwc6Lc-/exec"
